@@ -52,7 +52,6 @@
     :board-width 600
     :selected-space nil
     :me :white
-    :them :black
     :board (into {} 
       (for [x (range 8)] (for [y (range (tools/col-len x))]
         [[x y] {:piece (starting-pieces [x y])}])))}))

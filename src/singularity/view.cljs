@@ -34,12 +34,13 @@
 (defn- input-group
   "Component defining an input (with a label) that is automatically mapped to
    given `path` in the `db`."
-  [path text type]
-  (let [value (db/get-in path)
-        handler #(db/assoc-in path (-> % .-target .-value))]
-  [:div.input-group
-    [:label text]
-    [:input {:type type :value value :on-change handler}]]))
+  ([path text type] (input-group path text type identity))
+  ([path text type converter]
+    (let [value (db/get-in path)
+          handler #(db/assoc-in path (converter (-> % .-target .-value)))]
+    [:div.input-group
+      [:label text]
+      [:input {:type type :value value :on-change handler}]])))
 
 (defn- panel
   "Component defining the config/info panel that appears alongside the board."
@@ -49,7 +50,8 @@
     [:p "A Chess variant in which the vertical rows "
         "are replaced with concentric circles. "
         "Play otherwise proceeds as normal for chess."]
-    [input-group [:board-width] "Board Width" "number"]])
+    [input-group [:board-width] "Board Width" "number"]
+    [input-group [:me] "Player color" "text" keyword]])
 
 (defn root
   "Root component defining the whole application, including CSS."

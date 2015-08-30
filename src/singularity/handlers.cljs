@@ -16,8 +16,9 @@
       (nil? p2)
       (= (db/get :me) (:color p1)))))
 
-(defn- move! [s1 s2]
+(defn- move!
   "Move function accepts 2 coords, moves from s1 to s2"
+  [s1 s2]
   (db/assoc-in [:board s2 :piece] (db/get-in [:board s1 :piece]))
   (db/assoc-in [:board s1 :piece] nil))
 

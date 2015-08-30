@@ -7,11 +7,17 @@
 
 (def schema 
   "Defines the expected shape (i.e. data model) for `state`."
-  {:board-width s/Num
-   :selected-space (s/maybe [s/Num])
-   :board (s/both 
-     (s/pred #(= 64 (count %)))
-     {[s/Num] {:piece (s/maybe s/Str)}})})
+  (let [piece-colors (s/enum :white :black)
+        piece-types (s/enum :rook :knight :bishop :pawn :queen :king)]
+    {:board-width s/Num
+     :selected-space (s/maybe [s/Num])
+     :me piece-colors
+     :them piece-colors
+     :board (s/both 
+       (s/pred #(= 64 (count %)))
+       {[s/Num] {:piece (s/maybe {
+        :color piece-colors
+        :type piece-types})}})}))
 
 
 ; Use schema as validator for state atom. Ensures that an exception
@@ -26,13 +32,16 @@
 ;        :color (s/enum :white :black)
 ;        :type (s/enum :rook :knight :bishop :pawn :queen :king)
 
-(def starting-pieces (into {
-  [0, 0]  "r" [1, 0] "n" [2, 0] "b" [3, 0]  "q"
-  [4, 0]  "k" [5, 0] "b" [6, 0] "n" [7, 0]  "r"
-  [0, 4]  "R" [1, 6] "N" [2, 8] "B" [3, 10] "Q"
-  [4, 10] "K" [5, 8] "B" [6, 6] "N" [7, 4]  "R" }
-  (conj (for [x (range 8)] [[x, 1] "p"])
-        (for [x (range 8)] [[x, (-> x tools/col-len (- 2))] "P"]))))
+(def starting-pieces 
+  (let [w (fn [t] {:color :white :type t})
+        b (fn [t] {:color :black :type t})]
+    (into {
+      [0, 0]  (w :rook) [1, 0] (w :knight) [2, 0] (w :bishop) [3, 0]  (w :queen)
+      [4, 0]  (w :king) [5, 0] (w :bishop) [6, 0] (w :knight) [7, 0]  (w :rook)
+      [0, 4]  (b :rook) [1, 6] (b :knight) [2, 8] (b :bishop) [3, 10] (b :queen)
+      [4, 10] (b :king) [5, 8] (b :bishop) [6, 6] (b :knight) [7, 4]  (b :rook)}
+      (conj (for [x (range 8)] [[x, 1] (w :pawn)])
+            (for [x (range 8)] [[x, (-> x tools/col-len (- 2))] (b :pawn)])))))
 
 
 (defn init
@@ -42,6 +51,8 @@
   (reset! state {
     :board-width 600
     :selected-space nil
+    :me :white
+    :them :black
     :board (into {} 
       (for [x (range 8)] (for [y (range (tools/col-len x))]
         [[x y] {:piece (starting-pieces [x y])}])))}))

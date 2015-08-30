@@ -7,12 +7,11 @@
 (defn- space
   "Component defining a single space."
   [board-width x y]
-  (let 
-    [[path-d, [text-x, text-y]] (tools/space-calc board-width x y)
-     handler #(handlers/space x y)
-     text (db/get-in [:board [x y] :piece])
-     selected? (= (db/get :selected-space) [x y])
-     black? (= 1 (+ (mod x 2) (mod y 2)))]
+  (let [[path-d, [text-x, text-y]] (tools/space-calc board-width x y)
+         handler #(handlers/space x y)
+         text (tools/piece->str (db/get-in [:board [x y] :piece]))
+         selected? (= (db/get :selected-space) [x y])
+         black? (= 1 (+ (mod x 2) (mod y 2)))]
     [:g
       [:path 
         {:stroke (colors :sq-border)

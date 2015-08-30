@@ -6,6 +6,20 @@
 ; combines args into a string, separated by spaces
 (defn join [& args] (clojure.string/join " " args))
 
+(def ^:private sym->str {
+  :pawn "p"
+  :bishop "b"
+  :knight "k"
+  :rook "r"
+  :queen "q"
+  :king "k"
+  :white "w"
+  :black "b"})
+
+(defn piece->str [piece]
+  (if (nil? piece) ""
+    (clojure.string/upper-case (str ((piece :color) sym->str) ((piece :type) sym->str)))))
+
 ; calculates the "d" attribute for given space
 ; returns [d, [x1, x1]] where x1, y1 indicate the center of the space (for text)
 (defn space-calc [width x y]

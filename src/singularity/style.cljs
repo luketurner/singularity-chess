@@ -3,11 +3,11 @@
 
 (def colors
   "Central store for coloring information"
-  { :sq-text "#9999aa"
-    :sq-white "#f0f0f0"
-    :sq-black "#c6d6f6"
-    :sq-sel "yellow"
-    :sq-border "#9999aa"})
+  {:sq-text "#9999aa"
+   :sq-white "#f0f0f0"
+   :sq-black "#c6d6f6"
+   :sq-sel "yellow"
+   :sq-border "#9999aa"})
 
 (def ^:private inline-block {:display "inline-block" :vertical-align "top"})
 

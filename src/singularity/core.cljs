@@ -1,11 +1,17 @@
 (ns singularity.core
   (:require [reagent.core :as r]
-            [singularity.view :as view]
-            [singularity.db :as db]))
+            [singularity.game :as game]
+            [singularity.board :as board]
+            [singularity.controls :as controls]
+            [singularity.style :as style]))
+
+(defn view-root []
+  [:div [:style style/css] [board/board] [controls/control-panel]])
 
 (defn init []
-  (db/init)
-  (r/render-component (view/root) (.-body js/document)))
+  (game/init!)
+  (board/init!)
+  (r/render-component view-root (.-body js/document)))
 
 (enable-console-print!)
 (figwheel.client/start {:on-jsload init})

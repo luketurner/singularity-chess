@@ -1,4 +1,5 @@
-(ns singularity.board
+(ns ^{:doc "Contains functions for generating the Singularity Chess board."}
+  singularity.board
   (:require [singularity.db :as db]
             [singularity.game :as game]))
 

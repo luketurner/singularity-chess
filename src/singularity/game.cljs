@@ -1,4 +1,5 @@
-(ns ^{:doc ""}
+(ns ^{:doc "Game component contains all game logic (move validity, piece info, etc.).
+            Provides functions for reading and modifying various aspects of the current game state."}
   singularity.game
 	(:require [singularity.db :as db]
             [cljs.core.match :refer-macros [match]]))

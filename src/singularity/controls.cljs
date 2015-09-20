@@ -1,4 +1,5 @@
-(ns singularity.controls
+(ns ^{:doc "Contains logic for making control panel and handling input therefrom."}
+  singularity.controls
   (:require [singularity.db :as db]))
 
 (defn- input-group

@@ -1,4 +1,5 @@
-(ns singularity.style
+(ns ^{:doc "Contains styles for the whole application"}
+  singularity.style
 	(:require [garden.core :as garden]
             [garden.selectors :as sel]))
 

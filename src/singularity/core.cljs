@@ -3,16 +3,25 @@
             [singularity.game :as game]
             [singularity.board :as board]
             [singularity.controls :as controls]
-            [singularity.style :as style]))
-
-(defn view-root []
-  [:div [:style style/css] [board/board] [controls/control-panel]])
-
-(defn init []
-  (game/init!)
-  (board/init!)
-  (r/render-component view-root (.-body js/document)))
+            [singularity.style :as style]
+            [singularity.ai :as ai]))
 
 (enable-console-print!)
-(figwheel.client/start {:on-jsload init})
-(init)
+
+(defn view-root
+  "Top-level application component."
+  []
+  [:div
+   [:style style/css]
+   [board/board]
+   [controls/control-panel]])
+
+(defn init! []
+  (game/init!)
+  (board/init!)
+  (ai/init!))
+
+(r/render-component view-root (.getElementById js/document "app"))
+
+(defn on-js-reload [] (init!))
+(init!)

@@ -23,13 +23,13 @@
                    :font                "14px Calibri,Arial,sans-serif"}]
            [(keyword "g:nth-child(2n) path") {:fill sq-black}
             [:&.sel {:fill sq-sel}]
-            [:&.valid:hover {:fill sq-valid}]
-            [:&.invalid:hover {:fill sq-invalid}]]
+            [:&.valid {:fill sq-valid}]
+            [:&.invalid {:fill sq-invalid}]]
            [:path {:fill   sq-white
                    :stroke sq-text}
             [:&.sel {:fill sq-sel}]
-            [:&.valid:hover {:fill sq-valid}]
-            [:&.invalid:hover {:fill sq-invalid}]]
+            [:&.valid {:fill sq-valid}]
+            [:&.invalid {:fill sq-invalid}]]
            [:text {:font-size "20px"
                    :cursor    "default"
                    :fill      sq-text}]

@@ -43,7 +43,7 @@
   (if (nil? piece) ""
     (let [strings {:pawn "p" :bishop "b" :knight "k" :rook "r"
                    :queen "q" :king "k" :white "w" :black "b"}]
-    (clojure.string/upper-case (str ((piece :color) strings) ((piece :type) strings))))))
+     (clojure.string/upper-case (str ((piece :color) strings) ((piece :type) strings))))))
 
 (defn- onclick
   "Event handler for when user clicks a space. This can have one of two
@@ -51,28 +51,25 @@
   clicking will move the selected piece to the new location. If the
   movement is invalid or a piece is not selected, this will select the
   clicked piece."
-  [coords valid?]
-  (let [piece (db/get-in [:board coords :piece])
-        selected (db/get :selected-space)]
-    (if (not valid?)
-      (game/toggle-select! coords) ; not a valid move, use selection
+  [coords]
+  (let [selected @(db/selected-space)]
+    (if (game/valid-move? selected coords)
       (do ; this is a valid move, use movement
         (game/move! selected coords)
-        (game/toggle-select! nil)))))
+        (game/toggle-select! nil))
+      (game/toggle-select! coords)))) ; not a valid move, use selection
 
 (defn- space
   "Component defining a single space."
   [board-width coords]
   (let [[path-d, [text-x, text-y]] (space-calc board-width coords)
          selected (db/get :selected-space)
-         selected-piece (db/get-in [:board selected :piece])
-         valid? (game/valid-move? selected coords)
-         handler #(onclick coords valid?)
-         text (str coords) ;(piece->str (db/get-in [:board coords :piece]))
+         handler #(onclick coords)
+         text (piece->str (db/get-in [:board coords :piece]))
          el-class (if (nil? selected) ""
-          (if (or (game/diagonal? selected coords) (= selected coords)) "sel" 
-            (if (nil? selected-piece) ""
-              (if valid? "valid" "invalid"))))]
+                   (if (= selected coords) "sel" 
+                     (if (nil? (db/get-in [:board selected :piece])) ""
+                       (if (game/valid-move? selected coords) "valid" "invalid"))))]
     [:g
       [:path 
         {:d path-d
@@ -92,6 +89,7 @@
           ^{:key [x y]} [space width [x y]])))))
 
 (defn init!
+  "Initializes the data this component relies on in 'db'."
   []
   (db/define       
     :board-width 600

@@ -4,31 +4,30 @@
 
 (defn- input-group
   "Component defining an input that is automatically mapped to
-   given `path` in the `db`."
-  ([path] (input-group path "text"))
-  ([path type] (input-group path type identity))
-  ([path type converter]
-    (let [value (db/get-in path)
-          handler #(db/assoc-in path (converter (-> % .-target .-value)))]
-    [:input {:type type :value value :on-change handler}])))
+   given `atom`."
+  ([atom] (input-group atom "text"))
+  ([atom type] (input-group atom type identity))
+  ([atom type converter]
+   (let [handler #(reset! atom (converter (-> % .-target .-value)))]
+     [:input {:type type :value @atom :on-change handler}])))
 
 (defn- toggle-link
-  "Component defining an 'link' that actually updates a path in the db.
+  "Component defining an 'link' that actually updates `atom`.
    `converter` must be a function which returns a string when given the
    value in the db."
-  [path options] 
-    (let [opt-keys (keys options)
-          value (db/get-in path)
-          text (options value)
-          value-next (zipmap opt-keys (conj (vec (rest opt-keys)) (first opt-keys)))
-          handler #(db/assoc-in path (value-next value))]
-      [:a {:class "input" :on-click handler} text]))
+  [atom options]
+  (let [opt-keys (keys options)
+        current-value @atom
+        display-text (get options current-value)
+        value-next (zipmap opt-keys (conj (vec (rest opt-keys)) (first opt-keys)))
+        handler #(reset! atom (value-next current-value))]
+    [:a {:class "input" :on-click handler} display-text]))
 
 (defn color-select []
-  [toggle-link [:me] {:white "white" :black "black"}])
+  [toggle-link (db/me) {:white "white" :black "black"}])
 
 (defn opponent-select [] 
-  [toggle-link [:them] {:ai "an AI" :player "another player" :me "yourself"}])
+  [toggle-link (db/them) {:ai "an AI" :player "another player" :me "yourself"}])
 
 (defn- control-panel
   "Component defining the config/info panel that appears alongside the board."
